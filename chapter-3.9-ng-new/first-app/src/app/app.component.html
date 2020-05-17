@@ -1,0 +1,10 @@
+<h1>ALV GUEY, I feel like Thanos!!!</h1>
+<h4>My First Angular joke app xD</h4>
+
+<app-first-form (childEvent)="receivedData=$event"> [dataFromParent]="dataToChild"></app-first-form>
+
+<div *ngIf="receivedData != null">
+  <p>Name from child: {{ receivedData.name }}</p>
+  <p>Status from child: {{ receivedData.status }}</p>
+  <p>Should display password from child: {{ receivedData.displayPassword }}</p>
+</div>

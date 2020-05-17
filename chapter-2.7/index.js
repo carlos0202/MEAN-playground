@@ -1,0 +1,1 @@
+console.log(`Este tío es tonto!`);

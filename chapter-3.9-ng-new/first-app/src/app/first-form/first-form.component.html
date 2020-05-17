@@ -1,0 +1,86 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="form-group">
+      <label for="name">Name: </label>
+      <input type="text" id="name" [value]="name" />
+    </div>
+
+    <div class="form-group">
+      <label>{{ user }}</label>
+      <input [(ngModel)]="user" type="text"  name="user" />
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email: </label>
+      <input #email type="text" id="email" value="" />
+    </div>
+
+    <div class="form-group">
+      <label for="hobbies">Hobbies: </label>
+      <textarea id="hobbies" value="">
+          </textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="displayPassword">
+        Should display Password? 
+        <input type="checkbox" [(ngModel)]="displayPassword" name="displayPassword" />
+      </label>
+    </div>
+
+    <div class="form-group">
+      <label for="lightStatus">lightStatus: </label>
+      <input [(ngModel)]="lightStatus" type="text"  name="lightStatus" />
+    </div>
+
+    <div [ngSwitch]="lightStatus">
+      <div *ngSwitchCase = "'GREEN'">
+        <span style="color: green;">{{ lightStatus }}</span>
+      </div>
+      <div *ngSwitchCase = "'YELLOW'">
+        <span style="color: yellow;">{{ lightStatus }}</span>
+      </div>
+      <div *ngSwitchCase = "'RED'">
+        <span style="color: red;">{{ lightStatus }}</span>
+      </div>
+      <div *ngSwitchDefault>
+        <span style="color: black;">Unknown Color Detected</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="names">Names: </label>
+      <input [(ngModel)]="names" type="text"  name="names" />
+    </div>
+
+    <div *ngFor="let name of names.split(',')">
+      <span>{{ name }}</span>
+    </div>
+
+    <div *ngIf="displayPassword; then showPassword; else hidePassword;"></div>
+
+    <div class="form-group">
+      <button id="setDefaults" (click)="setDefaultForm()">Set Defaults</button>
+      <button id="sendForm" (click)="checkNSendForm(email.value)">Send</button>
+      <button id="sendDataToParent" (click)="onSendDataToParent()">Send data to Parent</button> 
+    </div>
+
+  </div>
+</div>
+
+<div class="form-group">
+  <p>{{ status }}</p>
+</div>
+
+<div class="form-group">
+  <p>Data incomming from parent component: {{ dataFromParent }}</p>
+</div>
+
+
+<ng-template #showPassword>
+  <p>12345678</p>
+</ng-template>
+
+<ng-template #hidePassword>
+  <p>No password for you sucker!!!</p>
+</ng-template>
