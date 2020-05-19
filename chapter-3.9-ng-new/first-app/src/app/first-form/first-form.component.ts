@@ -16,6 +16,7 @@ export class FirstFormComponent implements OnInit {
   lightStatus: string;
   names: string;
   courses: Array<Course>;
+  errorMessage: string;
 
   @Input() dataFromParent: string;
 
@@ -25,13 +26,16 @@ export class FirstFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.setDefaultForm();
-    this.courses = this.courseService.getCourses();
-    console.log(this.courses);
+    this.courseService
+      .getCourses()
+      .subscribe(data => this.courses = data,
+                 error => this.errorMessage = error);
   }
 
   checkNSendForm(email: string): void {
     console.log(email);
     this.status = "Starting to validate form to be submitted";
+    console.log(this.courses);
   }
 
   setDefaultForm(): void {
