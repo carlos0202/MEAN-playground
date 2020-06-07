@@ -2,9 +2,7 @@ const EventEmitter = require('events');
 
 const emitter = new EventEmitter();
 
-emitter.on('event', function(){
-  console.log(`An event has occurred`);
-});
+emitter.on('event', () => console.log(`An event has occurred`));
 
 emitter.emit('event');
 
