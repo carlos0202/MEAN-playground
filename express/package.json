@@ -1,0 +1,16 @@
+{
+  "name": "express-intro",
+  "version": "1.0.0",
+  "description": "express hands on app",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run test",
+    "start": "nodemon index.js"
+  },
+  "author": "Carlos Gonzalez",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-validator": "^6.5.0"
+  }
+}
