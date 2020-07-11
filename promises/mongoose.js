@@ -54,8 +54,6 @@ async function getCarsWithMoreFilters() {
   console.log(cars);
 }
 
-updateCar("5ef7ebc7880e24395892478a");
-
 async function updateCar(id) {
   const model = await Car.findById(id);
 
@@ -67,3 +65,18 @@ async function updateCar(id) {
   const result = await model.save();
   console.log(result);
 }
+
+async function deleteCar(id) {
+  const result = await Car.deleteOne({_id: id});
+  console.log(result);
+
+  await closeConnection();
+}
+
+async function closeConnection() {
+  await mongoose.connection.close();
+
+  process.exit(0);
+}
+
+deleteCar("5f09e4c06bb95b39485419ab");

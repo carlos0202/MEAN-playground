@@ -44,7 +44,7 @@ const personaSchema = new mongoose.Schema({
 
 const Persona = mongoose.model('persona', personaSchema, 'persona');
 
-updatePersona("5d50150600338d458ec4e8fb");
+updateFirstPersona("5d50150600338d458ec4e8fb");
 
 async function getPersonas() {
   let result = await Persona
@@ -123,6 +123,23 @@ async function updatePersona(id) {
     const result = await model.save();
     console.log(result);
   }
+
+  await closeConnection();
+}
+
+async function updateFirstPersona(id) {
+  const result = await Persona.updateOne(
+    { _id : id},
+    {
+      $set: {
+        isActive: false,
+        balance: "$2,250.00",
+        age: 28
+      }
+    }
+  );
+
+  console.log(result);
 
   await closeConnection();
 }
