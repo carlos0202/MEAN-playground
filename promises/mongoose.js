@@ -17,8 +17,6 @@ const carSchema = new mongoose.Schema({
 
 const Car = mongoose.model('car', carSchema);
 
-getCarsWithMoreFilters();
-
 async function createCar() {
   const car = new Car({
     company: 'Audi',
@@ -54,4 +52,18 @@ async function getCarsWithMoreFilters() {
     .select({company: 1, model: 1, price: 1});
 
   console.log(cars);
+}
+
+updateCar("5ef7ebc7880e24395892478a");
+
+async function updateCar(id) {
+  const model = await Car.findById(id);
+
+  if(!model) return;
+
+  model.company = "ACME";
+  model.model = "Road Traveler";
+
+  const result = await model.save();
+  console.log(result);
 }
