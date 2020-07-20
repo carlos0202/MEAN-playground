@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const express = require('express');
 const morgan = require('morgan');
 const car = require('./routes/car');
@@ -16,3 +17,6 @@ app.listen(
   () => console.info(`Listening to ${port} port...`)
 );
 
+mongoose.connect('mongodb://localhost/carsdb', {useNewUrlParser: true, useUnifiedTopology: true})
+  .then(() => console.log('Connected successfully to MongoDB'))
+  .catch(err => console.log(`Error connecting to mongoDB: ${err.message}`));

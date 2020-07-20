@@ -1,22 +1,17 @@
+const mongoose = require('mongoose');
 const express = require('express');
 const { check, validationResult } = require('express-validator');
 const router = express.Router();
 
-var cars = [
-  { id: 0, company: "BMW", model: "X3", year: "2020" },
-  { id: 3, company: "BMW", model: "X3", year: "2017" },
-  { id: 1, company: "Audi", model: "A4", year: "2019" },
-  { id: 2, company: "Ford", model: "R1", year: "2010" }
-];
+const Car = require('../models/car');
 
-router.get('', (req, res) => {
-  res.send(cars);
+router.get('', async (req, res) => {
+  const model = await Car.find();
+  res.send(model);
 });
 
-router.get('/:id', (req, res) => {
-  let result = cars.find(
-    car => car.id === parseInt(req.params.id)
-  );
+router.get('/:id', async (req, res) => {
+  let result = await Car.findById(req.params.id);
 
   if (!result) {
     res.status(404)
@@ -26,10 +21,9 @@ router.get('/:id', (req, res) => {
   }
 });
 
-router.get('/company/:company', (req, res) => {
-  let result = cars.filter(
-    car => car.company === req.params.company
-  );
+router.get('/company/:company', async (req, res) => {
+  let result = await Car.find({company: req.params.company});
+
   if (!result || result.length == 0) {
     res.status(404)
       .send('No cars found with the given company name...');
@@ -38,11 +32,14 @@ router.get('/company/:company', (req, res) => {
   }
 });
 
-router.get('/company/:company/model/:model', (req, res) => {
-  let result = cars.filter(
-    car => car.company === req.params.company
-      && car.model === req.params.model
-  );
+router.get('/company/:company/model/:model', async (req, res) => {
+  let result = await Car.find({
+    $and: [
+      {company: req.params.company},
+      {model: req.params.model}
+    ]
+  });
+
   if (!result || result.length == 0) {
     res.status(404)
       .send('No cars found with the given company name and model...');
@@ -51,25 +48,28 @@ router.get('/company/:company/model/:model', (req, res) => {
   }
 });
 
-router.post('', [
+router.post('/', [
   check('company').isLength({ min: 3 }),
   check('model').isLength({ min: 3 })
 ],
-  (req, res) => {
+  async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
 
-    var carId = cars.length;
-    let payload = req.body;
-    let model = {
-      id: carId,
-      ...payload
-    };
-    cars.push(model);
+    const model = new Car({
+      company: req.body.company,
+      model: req.body.model,
+      year: req.body.year,
+      sold: req.body.sold,
+      price: req.body.price,
+      extras: req.body.extras
+    });
 
-    res.status(201).send(model);
+    const result = await model.save();
+
+    res.status(201).send(result);
   });
 
 router.put('/:id', [
