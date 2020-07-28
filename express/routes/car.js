@@ -6,7 +6,9 @@ const router = express.Router();
 const Car = require('../models/car');
 
 router.get('', async (req, res) => {
-  const model = await Car.find();
+  const model = await Car
+    .find()
+    .populate('company', 'name country');
   res.send(model);
 });
 
@@ -22,7 +24,7 @@ router.get('/:id', async (req, res) => {
 });
 
 router.get('/company/:company', async (req, res) => {
-  let result = await Car.find({company: req.params.company});
+  let result = await Car.find({ company: req.params.company });
 
   if (!result || result.length == 0) {
     res.status(404)
@@ -35,8 +37,8 @@ router.get('/company/:company', async (req, res) => {
 router.get('/company/:company/model/:model', async (req, res) => {
   let result = await Car.find({
     $and: [
-      {company: req.params.company},
-      {model: req.params.model}
+      { company: req.params.company },
+      { model: req.params.model }
     ]
   });
 
@@ -49,7 +51,6 @@ router.get('/company/:company/model/:model', async (req, res) => {
 });
 
 router.post('/', [
-  check('company').isLength({ min: 3 }),
   check('model').isLength({ min: 3 })
 ],
   async (req, res) => {
@@ -73,39 +74,38 @@ router.post('/', [
   });
 
 router.put('/:id', [
-  check('company').isLength({ min: 3 }),
   check('model').isLength({ min: 3 })
 ],
-  (req, res) => {
+  async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
 
-    const model = cars.find(c => c.id === parseInt(req.params.id));
+    const model = await Car.findByIdAndUpdate(req.params.id, {
+      company: req.body.company,
+      model: req.body.model,
+      year: req.body.year,
+      sold: req.body.sold,
+      price: req.body.price,
+      extras: req.body.extras
+    }, { new: true });
 
     if (!model) {
       return res.status(404)
         .send(`No car found with the given id: ${req.params.id}`);
     }
 
-    model.company = req.body.company;
-    model.model = req.body.model;
-    model.year = parseInt(req.body.year);
-
     res.status(204).send();
   });
 
-router.delete('/:id', (req, res) => {
-  const model = cars.find(c => c.id === parseInt(req.params.id));
+router.delete('/:id', async (req, res) => {
+  const model = await Car.findByIdAndDelete(req.params.id);
 
   if (!model) {
     return res.status(404)
       .send(`No car found with the given id: ${req.params.id}`);
   }
-
-  const index = cars.indexOf(model);
-  cars.splice(index, 1);
 
   res.send('Car successfully deleted...');
 });
